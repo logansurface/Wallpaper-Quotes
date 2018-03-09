@@ -16,8 +16,6 @@ The newly generated image should be waiting in the /wallpaper directory. In orde
 ## Under Development
 * Automatic running of the program at a specified time every day
 * Name of author under the quote
-* Name of book the exerpt is from
 * Allow the user to request quotes from certain books or genere of books
 * Allow the user to use custom fonts
-* Normalize the vertical alignment of the quote
 * Probably a lot more that I forgot about
