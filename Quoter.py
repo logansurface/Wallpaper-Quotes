@@ -4,6 +4,7 @@ from PIL import Image, ImageDraw, ImageFont
 from bs4 import BeautifulSoup
 import requests, urllib3
 import os, sys, random
+import time
 
 # TODO: Normalize the posistioning of the quote in vertical space
 
@@ -50,7 +51,7 @@ def clean_quote(quote_text):
 
 
 def main():
-    im = Image.open('res/img/' + str(random.randint(1, 6)) + '.png')
+    im = Image.open('res/img/' + str(random.randint(1, 5)) + '.png')
     fnt = ImageFont.truetype('res/fnt/MoonFlowerBold.ttf', 30)
     res = requests.get(quote_site)
 
@@ -62,13 +63,10 @@ def main():
 
     # Create a parsable bs4 object with the downloaded web page
     quote_soup = BeautifulSoup(res.text, 'html.parser')
-    # Store all quotes from the page
-    # div[class="quote"] > span[class="text"]
-    quote_text = clean_quote(quote_soup.select('div[class="quoteText"]')[2].getText())
-
-    # Grab the author of the stored quote
-    # div[class="quote"]  small[class="author"]
-    #quote_author = quote_soup.select('a[class="authorOrTitle"]')[1].getText()
+    quote_index = random.randint(1, 15)
+    # Grabs the quote from the downloaded page
+    quote_text = clean_quote(quote_soup.select('div[class="quoteText"]')[quote_index].getText())
+    quote_author = quote_soup.select('a[class="authorOrTitle"]')[quote_index].getText()
     # Separate drawing of text to fixed image size to retain consistency.
     quote_image = Image.new('RGBA', (im.width // 3, im.height // 4), (255, 255, 255, 0))
     draw_text = ImageDraw.Draw(quote_image)
@@ -86,15 +84,15 @@ def main():
             line_index += 1
             draw_text.text((20, 10 + (40 * line_index)), line, font=fnt, fill='White')
 
-    #draw_text.text((450, 10 + (40 * (line_index + 1))), '-' + quote_author, font=fnt, fill='White')
+    draw_text.text((430, 10 + (40 * (line_index + 1))), '-' + quote_author, font=fnt, fill='White')
 
     try:
         os.stat('wallpaper/')
     except:
         os.mkdir('wallpaper/')
 
-    im.paste(quote_image, ((im.width - quote_image.width), (im.height - quote_image.height)), quote_image)
-    im.save('wallpaper/wallpaper.png')
+    im.paste(quote_image, ((im.width - quote_image.width), 0), quote_image)
+    im.save('wallpaper/wallpaper-' + str(time.time()) + '.png')
 
 if __name__ == '__main__':
     main()
